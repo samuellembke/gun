@@ -6,11 +6,8 @@
 
 	var fs = require('fs');
 	var config = {
-		port: process.env.OPENSHIFT_NODEJS_PORT || process.env.VCAP_APP_PORT || process.env.PORT || process.argv[2] || 8765,
-		peers: process.env.PEERS && process.env.PEERS.split(',') || [
-			'https://gun1.pisar.media/gun',
-			'https://gun2.pisar.media/gun',
-		]
+		port: process.env.OPENSHIFT_NODEJS_PORT || process.env.VCAP_APP_PORT || process.env.PORT || process.argv[2] || 8080,
+		peers: process.env.PEERS && process.env.PEERS.split(',') || []
 	};
 	var Gun = require('../'); // require('gun')
 
@@ -21,6 +18,11 @@
 	} else {
 		config.server = require('http').createServer(Gun.serve(__dirname));
 	}
+
+	// // Create db directory if it doesn't exist
+	// if (!fs.existsSync('./db')){
+	// 	fs.mkdirSync('./db');
+	// }
 
 	var gun = Gun(
 		{
