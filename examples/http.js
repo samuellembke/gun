@@ -7,7 +7,10 @@
 	var fs = require('fs');
 	var config = {
 		port: process.env.OPENSHIFT_NODEJS_PORT || process.env.VCAP_APP_PORT || process.env.PORT || process.argv[2] || 8765,
-		peers: process.env.PEERS && process.env.PEERS.split(',') || []
+		peers: process.env.PEERS && process.env.PEERS.split(',') || [
+			'https://gun1.pisar.media/gun',
+			'https://gun2.pisar.media/gun',
+		]
 	};
 	var Gun = require('../'); // require('gun')
 
@@ -19,7 +22,13 @@
 		config.server = require('http').createServer(Gun.serve(__dirname));
 	}
 
-	var gun = Gun({web: config.server.listen(config.port), peers: config.peers});
+	var gun = Gun(
+		{
+			web: config.server.listen(config.port),
+			peers: config.peers,
+			file: 'data.json'
+		}
+	);
 
 	console.log('Relay peer started on port ' + config.port + ' with /gun');
 
